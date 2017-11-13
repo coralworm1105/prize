@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" style="font-size:40px;">
+
+	<head>
+
+		<meta charset="utf-8" />
+
+		<meta name='HandheldFriendly' content='True' />
+
+		<!--<meta name='viewport' content='initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' />-->
+
+		<meta name='viewport' content='user-scalable=0' />
+
+		<meta name="viewport" content="width=device-width" />
+		<link rel="stylesheet" type="text/css" href="css/base.min.css"/>
+	</head>
+
+	<body class="main_box">
+		<div class="box">
+			<div class="bg_in">
+				<div class="title">●&nbsp;刮奖区&nbsp;●</div>
+			</div>
+			<div class="content">
+				<div id="mask_img_bg"><img src="img/bag.jpg"></div>
+				<img id="redux" src="img/mask-img.jpg"/>
+			</div>
+		</div>
+		<div class="show">
+			<img class="show_bg" src="img/ok.png">
+			<img class="show_bg1" src="img/ok1.png">
+			<img class="show_food" src="img/bag.jpg" />
+			<a class="close"></a>
+			<a class="btn"></a>
+		</div>
+		<div class="mask"></div>
+		<input type="button" onClick="reset()" value="再抽一"/>
+
+
+
+
+
+
+		<script src="http://www.jq22.com/jquery/2.1.1/jquery.min.js"></script>
+
+		<script src='jquery.eraser.js' type='text/javascript'></script>
+
+		<script type = "text/javascript">
+				function reset(){
+					$('#redux').eraser("reset");
+				}
+			function randomnum(smin, smax) {// 获取2个值之间的随机数
+				var Range = smax - smin;
+				var Rand = Math.random();
+				return (smin + Math.round(Rand * Range));
+			}
+
+			function runzp() {
+				var data = '[{"id":1,"prize":"590大洋","v":1.0},{"id":2,"prize":"100RMB","v":2.0},{"id":3,"prize":"安慰奖","v":48.0}]';// 奖项json
+				var obj = eval('(' + data + ')');
+				var result = randomnum(1, 100);
+				var line = 0;
+				var temp = 0;
+				var returnobj = "0";
+				var index = 0;
+			
+				//alert("随机数"+result);
+				for ( var i = 0; i < obj.length; i++) {
+					var obj2 = obj[i];
+					var c = parseFloat(obj2.v);
+					temp = temp + c;
+					line = 100 - temp;
+					if (c != 0) {
+						if (result > line && result <= (line + c)) {
+							index = i;
+							// alert(i+"中奖"+line+"<result"+"<="+(line + c));
+							returnobj = obj2;
+							break;
+						}
+					}
+				}
+				return returnobj;
+			}
+			$(window).load(function  () { //这个适用手机端，等图片加载完再显示，因为有可能会出现第一次加载图片没有加载完就不会出现canvas
+				debugger
+				var result = runzp();
+				if(result  == '0'){
+					$("#mask_img_bg").html("<div>再抽一次</div>");
+				}else{
+					$("#mask_img_bg").html("<img src='img/"+ result.id +".jpg'/>");
+					$(".show_food").attr("src","img/"+ result.id +".jpg");
+				}
+				$('#redux').eraser( {
+					size: 20,   //设置橡皮擦大小
+				    completeRatio: .6, //设置擦除面积比例
+				    completeFunction: showResetButton   //大于擦除面积比例触发函数
+				});
+				function showResetButton(){
+					if(result  == '0'){
+					alert("再抽一次");
+					}else{
+						$(".main_box .show,.main_box .mask").fadeIn(300)
+					}					
+				}
+
+				$(".main_box .mask,.main_box .show .close,.main_box .show .btn").click(function  () {
+					$(".main_box .show,.main_box .mask").fadeOut(300);
+					$('#redux').eraser("reset");
+				});
+			})
+	
+
+		</script>
+
+
+
+	</body>
+
+
+
+</html>
